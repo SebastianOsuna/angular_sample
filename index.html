@@ -1,0 +1,181 @@
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" href="css/styles.css" charset="utf-8">
+        <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" charset="utf-8">
+
+        <script src="bower_components/jquery/dist/jquery.js"></script>
+        <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    </head>
+    <body ng-app="angular_sample">
+
+        <!-- Navigation Menu -->
+        <div class="row">
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active">
+                    <a href="#movementsList" role="tab" data-toggle="tab">Movimientos</a>
+                </li>
+                <li role="presentation">
+                    <a href="#newMovement" role="tab" data-toggle="tab">Nuevo Movimientos</a>
+                </li>
+                <li role="presentation">
+                    <a href="#vouchersList" role="tab" data-toggle="tab">Comprobantes</a>
+                </li>
+                <li role="presentation">
+                    <a href="#report1" role="tab" data-toggle="tab">Saldos por identificaci&oacute;n</a>
+                </li>
+            </ul>
+        </div>
+        <!-- END Navigation Menu -->
+
+        <div ng-controller="MovementsController as movementsCtrl" role="tabpanel" ng-init="movementsCtrl.load()">
+            <div class="container tab-content">
+                <!-- Movements list -->
+                <div class="row tab-pane active" role="tabpanel" id="movementsList">
+                    <div class="col-lg-10 col-lg-push-1">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Fecha</th>
+                                    <th>Cuenta</th>
+                                    <th>Documento</th>
+                                    <th>Total</th>
+                                    <th>Comprobantes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="movement in movementsCtrl.movements">
+                                    <td>{{ movement.id }}</td>
+                                    <td>{{ movement.date }}</td>
+                                    <td>{{ movement.account }}</td>
+                                    <td>{{ movement.document }}</td>
+                                    <td>{{ movement.total | currency }}</td>
+                                    <td>{{ movement.vouchers.length }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- END Movements list -->
+
+                <!-- New movement form -->
+                <div class="row tab-pane" role="tabpanel" id="newMovement">
+                    <div class="col-lg-8 col-lg-push-2">
+                        <h2>Nuevo movimiento</h2>
+                        <div class="form-group">
+                            <label for="movement_date" class="form-label">Fecha:</label>
+                            <input type="date" id="movement_date" ng-model="movementsCtrl.new.date" class="form-control"/>
+                        </div>
+                        <div class="form-group" ng-controller="AccountsController as accountsCtrl">
+                            <label for="movement_account" class="form-label">Cuenta:</label>
+                            <select ng-options="account.number+' - '+account.name for account in accountsCtrl.accounts track by account.number" ng-model="movementsCtrl.new.account" class="form-control"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="movement_document" class="form-label">Documento:</label>
+                            <input type="text" id="movement_document" ng-model="movementsCtrl.new.document" class="form-control">
+                        </div>
+                        <div>
+                            <label class="form-label">Comprobantes</label><br/>
+                            <div class="row">
+                                <table class="table col-lg-8">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Valor</th>
+                                            <th>Identificaci&oacute;n</th>
+                                            <th>Descripci&oacute;n</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="voucher in movementsCtrl.new.vouchers">
+                                            <td>
+                                                {{ $index + 1 }}
+                                            </td>
+                                            <td>
+                                                <input type="decimal" id="voucher_value-{{ $index }}" ng-model="voucher.value"/>
+                                            </td>
+                                            <td>
+                                                <input type="text" id="voucher_identification-{{ $index }}" ng-model="voucher.identification"/>
+                                            </td>
+                                            <td>
+                                                <textarea id="voucher_description-{{ $index }}" rows="8" cols="40" ng-model="voucher.description"></textarea>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="4">
+                                                <button type="button" ng-click="movementsCtrl.addNewVoucher()" class="btn btn-success pull-right">Nuevo comprobante</button>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" class="btn btn-default" ng-click="movementsCtrl.saveNew()">Guardar</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- END New movement form -->
+
+                <!-- Vouchers List -->
+                <div class="row tab-pane" role="tabpanel" id="vouchersList">
+                    <div class="col-lg-10 col-lg-push-1">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Movimiento</th>
+                                    <th>Cuenta</th>
+                                    <th>Identificaci&oacute;n</th>
+                                    <th>Valor</th>
+                                    <th>Descripci&oacute;n</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="voucher in movementsCtrl.vouchers">
+                                    <td>{{ voucher.id }}</td>
+                                    <td>{{ voucher.parentMovement.id }}</td>
+                                    <td>{{ voucher.parentMovement.account }}</td>
+                                    <td>{{ voucher.identification }}</td>
+                                    <td>{{ voucher.value | currency }}</td>
+                                    <td>{{ voucher.description }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- END Vouchers List -->
+
+                <!-- Balance by identification -->
+                <div class="row tab-pane" role="tabpanel" id="report1">
+                    <div class="col-lg-10 col-lg-push-1">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Cedula</th>
+                                    <th>Saldo</th>
+                                    <th>Comprobantes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="entry in movementsCtrl.report1">
+                                    <td>{{ entry.identification }}</td>
+                                    <td>{{ entry.balance | currency }}</td>
+                                    <td>{{ entry.count }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- END Balance by identification -->
+                
+            </div>
+        </div>
+
+        <script src="bower_components/angular/angular.js"></script>
+        <script src="js/app.js"></script>
+    </body>
+</html>
