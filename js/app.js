@@ -1,12 +1,12 @@
 (function() {
-    var app = angular.module('angular_sample', []);
+    var app = angular.module('angular_sample', ['ngStorage']);
 
     app
     /**
         Movements Controller
     */
     .controller('MovementsController',
-        function($scope) {
+        function($scope, $localStorage) {
             var _movementsSequence = 0,
                 _vouchersSequence = 0,
                 _this = this;
@@ -24,11 +24,32 @@
             this.vouchers = [];
 
             this.load = function() {
-
+                var placeholder = $localStorage.movements;
+                this.movements = placeholder ? angular.copy(placeholder) : [];
+                this.movements.forEach(function(movement) {
+                    movement.vouchers.forEach(function(voucher) {
+                        voucher.parentMovement = _this.movements.filter(function(m) { return m.id === voucher.movement; })[0];
+                        delete voucher.movement;
+                        _this.vouchers.push(voucher);
+                    });
+                });
+                this._report1();
+                this._report2();
+                _vouchersSequence = Number($localStorage._vouchersSequence) || 0;
+                _movementsSequence = Number($localStorage._movementsSequence) || 0;
             };
 
             this.persist = function() {
-                // localStorage.setItem("data", this.movements);
+                var data = angular.copy(this.movements);
+                data.forEach(function(movement) {
+                    movement.vouchers.forEach(function(voucher) {
+                        voucher.movement = movement.id;
+                        delete voucher.parentMovement;
+                    });
+                });
+                $localStorage.movements = data;
+                $localStorage._movementsSequence = _movementsSequence;
+                $localStorage._vouchersSequence = _vouchersSequence;
             };
 
             this.addNewVoucher = function() {
@@ -51,6 +72,7 @@
                 this.persist();
                 this.reset();
                 this._report1();
+                this._report2();
             };
 
             this.reset = function() {
@@ -66,6 +88,19 @@
                     current.count++;
                 });
                 this.report1 = Object.keys(wrapper).map(function(k) {
+                    return wrapper[k];
+                });
+            };
+
+            this._report2 = function() {
+                var wrapper = {};
+                this.vouchers.forEach(function(voucher) {
+                    var current =
+                        wrapper[voucher.account] = wrapper[voucher.account] || { account: voucher.parentMovement.account, balance: 0, count: 0 };
+                    current.balance += parseFloat(voucher.value);
+                    current.count++;
+                });
+                this.report2 = Object.keys(wrapper).map(function(k) {
                     return wrapper[k];
                 });
             };

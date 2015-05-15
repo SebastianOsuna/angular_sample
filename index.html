@@ -24,6 +24,9 @@
                 <li role="presentation">
                     <a href="#report1" role="tab" data-toggle="tab">Saldos por identificaci&oacute;n</a>
                 </li>
+                <li role="presentation">
+                    <a href="#report2" role="tab" data-toggle="tab">Saldos por cuenta</a>
+                </li>
             </ul>
         </div>
         <!-- END Navigation Menu -->
@@ -171,11 +174,35 @@
                     </div>
                 </div>
                 <!-- END Balance by identification -->
-                
+
+                <!-- Balance by account -->
+                <div class="row tab-pane" role="tabpanel" id="report2">
+                    <div class="col-lg-10 col-lg-push-1">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Cuenta</th>
+                                    <th>Saldo</th>
+                                    <th>Comprobantes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="entry in movementsCtrl.report2">
+                                    <td>{{ entry.account }}</td>
+                                    <td>{{ entry.balance | currency }}</td>
+                                    <td>{{ entry.count }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- END Balance by identification -->
+
             </div>
         </div>
 
         <script src="bower_components/angular/angular.js"></script>
+        <script src="bower_components/ngstorage/ngStorage.js"></script>
         <script src="js/app.js"></script>
     </body>
 </html>

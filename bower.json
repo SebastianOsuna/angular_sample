@@ -6,6 +6,7 @@
         "angular-resource": "",
         "angular-ui-router": "",
         "jquery": "",
-        "bootstrap": ""
+        "bootstrap": "",
+        "ngstorage": ""
     }
 }
