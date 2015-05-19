@@ -1,7 +1,26 @@
+ /**
+    Angular application
+ **/
 (function() {
     var app = angular.module('angular_sample', ['ngStorage']);
 
     app
+    /**
+        Navigation Controller
+    */
+    .controller('NavigationController',
+        function($localStorage) {
+            var activeTab = angular.copy($localStorage.nav) || 'movementsList';
+
+            this.active = function(tab) {
+                activeTab = tab;
+                $localStorage.nav = tab;
+            };
+
+            this.is = function(tab) {
+                return activeTab === tab;
+            }
+        })
     /**
         Movements Controller
     */
@@ -111,17 +130,31 @@
             Accounts Controller
         */
         .controller('AccountsController',
-        function() {
-            this.accounts = [
-                {
-                    number: '111020',
-                    name: 'Cuenta de ahorros'
-                },
-                {
-                    number: '111021',
-                    name: 'Cuenta de aporte'
-                }
-            ];
+        function($localStorage) {
+            this.accounts = [];
+            this._new = {
+                number: '',
+                name: ''
+            };
+            this.new = angular.copy(this._new);
+
+            this.save = function(newAccount) {
+                this.accounts.push(newAccount);
+                this.new = angular.copy(this._new);
+                this.persist();
+            };
+
+            this.load = function() {
+                var placeholder = $localStorage.accounts;
+                this.accounts = placeholder ? angular.copy(placeholder) : [];
+            };
+
+            this.persist = function() {
+                var data = angular.copy(this.accounts);
+                $localStorage.accounts = data;
+            };
+
+            this.load();
         })
 
         /**
@@ -131,7 +164,27 @@
             return function(input) {
                 return isNaN(input) ? input : "$ " + input.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             };
-        });
+        })
 
+        /**
+            Date format filter
+        */
+        .filter('dateFormat', function() {
+            var monthsES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+            'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+            return function(input) {
+                var d = new Date(input);
+                return d.getDate() + ' de ' + monthsES[d.getMonth()] + ' de ' + d.getFullYear();
+            };
+        })
+        ;
+})();
 
+/**
+    jQuery fixes
+**/
+(function() {
+    $('#newAccountForm').click(function(jqEv) {
+        jqEv.stopPropagation();
+    });
 })();

@@ -1,0 +1,26 @@
+.nav.nav-tabs {
+    margin-left: 20px;
+    margin-top: 10px;
+}
+
+.accounts_dropdown button {
+    text-align: left;
+}
+
+.accounts_dropdown button span {
+    float: right;
+    margin-top: 8px;
+}
+
+.accounts_dropdown .dropdown-menu {
+    width: 100%;
+}
+
+.accounts_dropdown .dropdown-menu li {
+    padding: 5px 20px;
+    cursor: pointer;
+}
+
+.accounts_dropdown .dropdown-menu li:hover {
+    background-color: #DDDDDD;
+}
