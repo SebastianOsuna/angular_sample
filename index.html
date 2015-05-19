@@ -118,11 +118,11 @@
                                             <td>
                                                 <div class="dropdown people_dropdown" id="voucher_identification-{{ $index }}">
                                                     <button type="button" id="personLabel" data-toggle="dropdown" class="form-control ">
-                                                        {{ movementsCtrl.new.identification || "Persona" }}
+                                                        {{ voucher.identification || "Persona" }}
                                                         <span class="caret"></span>
                                                     </button>
                                                     <ul class="dropdown-menu" role="menu">
-                                                        <li ng-repeat="person in pplCtrl.people" ng-click="movementsCtrl.new.identification = person.id">
+                                                        <li ng-repeat="person in pplCtrl.people" ng-click="voucher.identification = person.id">
                                                             {{ person.id }} - {{ person.name }}
                                                         </li>
                                                         <li>
