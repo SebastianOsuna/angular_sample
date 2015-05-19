@@ -98,7 +98,7 @@
                         <div>
                             <label class="form-label">Comprobantes</label><br/>
                             <div class="row">
-                                <table class="table col-lg-8">
+                                <table class="table col-lg-12">
                                     <thead>
                                         <tr>
                                             <th>#</th>
@@ -107,7 +107,7 @@
                                             <th>Descripci&oacute;n</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody ng-controller="PeopleController as pplCtrl">
                                         <tr ng-repeat="voucher in movementsCtrl.new.vouchers">
                                             <td>
                                                 {{ $index + 1 }}
@@ -116,7 +116,24 @@
                                                 <input type="decimal" id="voucher_value-{{ $index }}" ng-model="voucher.value"/>
                                             </td>
                                             <td>
-                                                <input type="text" id="voucher_identification-{{ $index }}" ng-model="voucher.identification"/>
+                                                <div class="dropdown people_dropdown" id="voucher_identification-{{ $index }}">
+                                                    <button type="button" id="personLabel" data-toggle="dropdown" class="form-control ">
+                                                        {{ movementsCtrl.new.identification || "Persona" }}
+                                                        <span class="caret"></span>
+                                                    </button>
+                                                    <ul class="dropdown-menu" role="menu">
+                                                        <li ng-repeat="person in pplCtrl.people" ng-click="movementsCtrl.new.identification = person.id">
+                                                            {{ person.id }} - {{ person.name }}
+                                                        </li>
+                                                        <li>
+                                                            <div class="form-inline person_form">
+                                                                <input type="text" placeholder="Identificaci&oacute;n" class="form-control" ng-model="pplCtrl.new.id"/>
+                                                                <input type="text" placeholder="Nombre" class="form-control" ng-model="pplCtrl.new.name"/>
+                                                                <span class="btn btn-success glyphicon glyphicon-check" ng-click="pplCtrl.save(pplCtrl.new)"></span>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
                                             </td>
                                             <td>
                                                 <textarea id="voucher_description-{{ $index }}" rows="8" cols="40" ng-model="voucher.description"></textarea>

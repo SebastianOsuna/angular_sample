@@ -73,7 +73,9 @@
 
             this.addNewVoucher = function() {
                 this.new.vouchers.push({});
+                $(document).trigger('new-voucher');
             };
+            $(document).trigger('new-voucher');
 
             this.saveNew = function() {
                 this.new.id = ++_movementsSequence;
@@ -156,6 +158,34 @@
 
             this.load();
         })
+        /**
+            Persons Controller
+        */
+        .controller('PeopleController',
+            function($localStorage) {
+                this.people = [];
+                this._new = {
+                    id: '',
+                    name: ''
+                };
+                this.new = angular.copy(this._new);
+
+                this.save = function(newPerson) {
+                    this.people.push(newPerson);
+                    this.new = angular.copy(this._new);
+                    this.persist();
+                };
+
+                this.load = function() {
+                    this.people = angular.copy($localStorage.people) || [];
+                };
+
+                this.persist = function() {
+                    $localStorage.people = angular.copy(this.people);
+                };
+
+                this.load();
+            })
 
         /**
             Currency filter
@@ -186,5 +216,13 @@
 (function() {
     $('#newAccountForm').click(function(jqEv) {
         jqEv.stopPropagation();
+    });
+    $(document).on('new-voucher', function() {
+        setTimeout(function() {
+            $('.person_form').click(function(jqEv) {
+                $(jqEv.target).unbind('click');
+                jqEv.stopPropagation();
+            });
+        }, 100);
     });
 })();

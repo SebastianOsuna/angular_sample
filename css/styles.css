@@ -16,11 +16,15 @@
     width: 100%;
 }
 
-.accounts_dropdown .dropdown-menu li {
+.people_dropdown .dropdown-menu {
+    min-width: 500px;
+}
+
+.people_dropdown .dropdown-menu li, .accounts_dropdown .dropdown-menu li {
     padding: 5px 20px;
     cursor: pointer;
 }
 
-.accounts_dropdown .dropdown-menu li:hover {
+.people_dropdown .dropdown-menu li:hover, .accounts_dropdown .dropdown-menu li:hover {
     background-color: #DDDDDD;
 }
